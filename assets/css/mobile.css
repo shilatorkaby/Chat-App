@@ -1,0 +1,42 @@
+@media (max-width:450px)  {
+	#chats_list, #chat_window{
+		padding: 0;
+		max-width: 100vh;
+		overflow-y: auto;
+	}	
+	
+	#chat_window{
+		position: absolute;
+		z-index: -100;
+	}
+	
+	#chat_window.visable{
+		z-index: 100;
+	}
+
+	#chat_window .header{
+		position: fixed;
+		top: 0;
+		right: 0;
+		z-index: 10;
+		width: 100%;
+		margin: 0 auto;
+	}
+
+	#chat_window .chat-container{
+		margin-top: 60px;
+	}
+
+	#chat_window #send_msg{
+		position: fixed;
+		bottom: 0;
+		right: 0;
+		z-index: 10;
+		width: 100%;
+		margin: 0 auto;		
+	}
+	
+	.hide_on_mobile{
+		display: none;
+	}
+}

@@ -3,16 +3,15 @@
 if (!defined("a328763fe27bba")) {
 	die("you can't access this file directly");
 }
+$config_json = file_get_contents(__DIR__ . '/config.json');
+$config = json_decode($config_json, true);
 
-$mysql_host = getenv("MYSQL_HOST") ?: "db";
-$mysql_db   = getenv("MYSQL_DATABASE") ?: "whatsapp_clone";
-$mysql_user = getenv("MYSQL_USER") ?: "root";
-$mysql_pass = getenv("MYSQL_PASSWORD") ?: (getenv("MYSQL_ROOT_PASSWORD") ?: "");
+// Define MySQL connection constants
+define("MYSQL_SERVERNAME", $config['mysql']['servername']);
+define("MYSQL_USERNAME", $config['mysql']['username']);
+define("MYSQL_DATABASE", $config['mysql']['db_name']);
+define("MYSQL_PASSWORD", $config['mysql']['password']);
 
-define("MYSQL_DEFAULT_SERVERNAME", $mysql_host);
-define("MYSQL_DEFAULT_USERNAME",   $mysql_user);
-define("MYSQL_DEFAULT_DB_NAME",    $mysql_db);
-define("MYSQL_DEFAULT_DB_PASSWORD", $mysql_pass);
 
 define("CONFIG_FILE_FIRED", true);
 define("APP_ROOT_ABS_PATH", __dir__);
@@ -43,20 +42,6 @@ define("APP_MODULES", [
 	"plugins",
 	"general_functions",
 ]);
-
-if (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false) {
-	define("MYSQL_DEFAULT_SERVERNAME", "localhost");
-	define("MYSQL_DEFAULT_USERNAME", "root");
-	define("MYSQL_DEFAULT_DB_NAME", "waclonedem_db28072025135752");
-	define("MYSQL_DEFAULT_DB_PASSWORD", "");
-	define("ENV", "dev");
-} else {
-	define("MYSQL_DEFAULT_SERVERNAME", "localhost");
-	define("MYSQL_DEFAULT_USERNAME", "root");
-	define("MYSQL_DEFAULT_DB_NAME", "");
-	define("MYSQL_DEFAULT_DB_PASSWORD", "");
-	define("ENV", "prod");
-}
 
 $GLOBALS["ini_set_display_errors"] = INI_SET_DISPLAY_ERRORS ?? $GLOBALS["ini_set_display_errors"] ?? true;
 $GLOBALS["ini_set_log_errors"] = INI_SET_LOG_ERRORS ?? $GLOBALS["ini_set_log_errors"] ?? true;
@@ -91,6 +76,14 @@ try {
 include_all_modules();
 include_all_plugins();
 
-if (function_exists("get_now")) {
-	$globals["app_loaded_datetime"] = get_now();
+// Store app load datetime with a safe fallback
+// IDE helper only (won't run at runtime)
+if (false) {
+    function get_now(): string { return date('Y-m-d H:i:s'); }
+}
+if (function_exists('get_now')) {
+    $GLOBALS['app_loaded_datetime'] = get_now();
+} else {
+    // Fallback so IDEs stop complaining and runtime still works
+    $GLOBALS['app_loaded_datetime'] = date('Y-m-d H:i:s');
 }

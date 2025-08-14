@@ -1,1 +1,9 @@
-{}
+{
+    "base_url": "http://localhost:8080/",
+    "mysql": {
+        "servername": "db",
+        "username": "root",
+        "password": "root",
+        "db_name": "home_test"
+    }
+}
